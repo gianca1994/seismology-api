@@ -1,1 +1,3 @@
-from .UserService import UserService as UserService
+from .UserResource import UsersResource as UsersRsc
+from .UserResource import UserResource as UserRsc
+
