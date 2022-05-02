@@ -23,6 +23,10 @@ def create_app():
 
     api.add_resource(resources.UsersRsc, '/users')
     api.add_resource(resources.UserRsc, '/users/<username>')
+
+    api.add_resource(resources.SensorsRsc, '/sensors')
+    api.add_resource(resources.SensorRsc, '/sensors/<id>')
+
     api.init_app(app)
 
     return app
