@@ -3,9 +3,11 @@ from flask import Flask
 from dotenv import load_dotenv
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
 
 api = Api()
 db = SQLAlchemy()
+jwt = JWTManager()
 
 
 def create_app():
@@ -27,6 +29,19 @@ def create_app():
     api.add_resource(resources.SensorsRsc, '/sensors')
     api.add_resource(resources.SensorRsc, '/sensors/<id>')
 
+    api.add_resource(resources.VerifiedSeismsRsc, '/verified-seisms')
+    api.add_resource(resources.VerifiedSeismRsc, '/verified-seisms/<id>')
+
+    api.add_resource(resources.UnverifiedSeismsRsc, '/unverified-seisms')
+    api.add_resource(resources.UnverifiedSeismRsc, '/unverified-seisms/<id>')
+
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
+    jwt.init_app(app)
+
     api.init_app(app)
+
+    from .auth import routes
+    app.register_blueprint(routes.auth)
 
     return app

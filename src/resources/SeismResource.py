@@ -4,14 +4,16 @@ from random import uniform, randint
 from flask_restful import Resource
 
 from .. import db
+from ..auth.decorators import role_required
 from ..models import SeismModel, SensorModel
 from flask import request, jsonify
 
 
 class VerifiedSeisms(Resource):
 
-    @property
-    def get(self):
+    @staticmethod
+    @role_required(roles=["standard", "admin"])
+    def get():
         page, per_page = 1, 5
         seisms = db.session.query(SeismModel).filter(SeismModel.verified is True)
 
@@ -49,7 +51,7 @@ class VerifiedSeisms(Resource):
                 if k == 'per_page':
                     per_page = int(v)
 
-        seisms = seisms.paginate(page, per_page, True, 500)
+        seisms = seisms.paginate(page, per_page, True, 100)
 
         return jsonify({
             'Verified-seisms': [seism.to_json() for seism in seisms.items],
@@ -60,7 +62,9 @@ class VerifiedSeisms(Resource):
 
 
 class UnverifiedSeisms(Resource):
+
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def get():
         page, per_page = 1, 5
         seisms = db.session.query(SeismModel).filter(SeismModel.verified is False)
@@ -116,6 +120,7 @@ class UnverifiedSeisms(Resource):
         })
 
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def post():
         sensors = db.session.query(SensorModel).all()
         sensor_list = [(int(sensor.id)) for sensor in sensors]
@@ -142,6 +147,7 @@ class UnverifiedSeisms(Resource):
 
 class VerifiedSeism(Resource):
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def get(id):
         seism = db.session.query(SeismModel).get_or_404(id)
         return seism.to_json() if seism.verified else 'Access denied', 403
@@ -149,11 +155,13 @@ class VerifiedSeism(Resource):
 
 class UnverifiedSeism(Resource):
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def get(id):
         seism = db.session.query(SeismModel).get_or_404(id)
         return seism.to_json() if not seism.verified else 'Access denied', 403
 
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def put(id):
         seism = db.session.query(SeismModel).get_or_404(id)
         data = request.get_json().items()
@@ -170,6 +178,7 @@ class UnverifiedSeism(Resource):
             return 'Access denied', 403
 
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def delete(id):
         seism = db.session.query(SeismModel).get_or_404(id)
         if not seism.verified:

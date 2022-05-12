@@ -1,15 +1,15 @@
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .. import db
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=True)
-    username = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     firstname = db.Column(db.String(100), nullable=False)
     lastname = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(8), default="standard")
     sensors = db.relationship('Sensor', back_populates='user')
 
     @property
@@ -20,12 +20,14 @@ class User(db.Model):
     def plain_password(self, password):
         self.password = generate_password_hash(password)
 
+    def validate_pass(self, password):
+        return check_password_hash(self.password, password)
+
     def __repr__(self):
-        return 'User: %r %r %r %r >' % (self.username, self.email, self.firstname, self.lastname)
+        return 'User: %r %r %r >' % (self.email, self.firstname, self.lastname)
 
     def to_json(self):
         return {
-            'username': str(self.username),
             'email': str(self.email),
             'firstname': str(self.firstname),
             'lastname': str(self.lastname)
@@ -33,7 +35,7 @@ class User(db.Model):
 
     def to_json_short(self):
         return {
-            'username': str(self.username),
+            'email': str(self.email),
             'firstname': str(self.firstname),
             'lastname': str(self.lastname)
         }
@@ -41,9 +43,8 @@ class User(db.Model):
     @staticmethod
     def from_json(user_json):
         return User(
-            username=get('username'),
-            plain_password=get('password'),
-            email=get('email'),
-            firstname=get('firstname'),
-            lastname=get('lastname'),
+            email=user_json.get('email'),
+            plain_password=user_json.get('password'),
+            firstname=user_json.get('firstname'),
+            lastname=user_json.get('lastname')
         )

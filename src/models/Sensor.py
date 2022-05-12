@@ -1,5 +1,4 @@
 from .. import db
-from .User import User as UserModel
 
 
 class Sensor(db.Model):
@@ -11,6 +10,7 @@ class Sensor(db.Model):
     active = db.Column(db.Boolean, nullable=False)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship('User', back_populates='sensors', uselist=False, single_parent=True)
+    seisms = db.relationship('Seism', back_populates='sensor', passive_deletes='all')
 
     def __repr__(self):
         return '<Sensor: %r %r %r >' % (self.name, self.ip, self.port)

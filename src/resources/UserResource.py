@@ -2,42 +2,37 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from src.models import UserModel
+from ..auth.decorators import role_required
 
 
 class UsersResource(Resource):
+
     @staticmethod
+    @role_required(roles=["standard", "admin"])
     def get():
         users = db.session.query(UserModel).all()
         return jsonify([user.to_json_short() for user in users])
 
-    @staticmethod
-    def post():
-        user = UserModel.from_json(request.get_json())
-
-        if db.session.query(UserModel).filter(UserModel.email == user.email).scalar() is not None:
-            return "Email already in use", 409
-
-        db.session.add(user)
-        db.session.commit()
-        return user.to_json(), 201
-
 
 class UserResource(Resource):
     @staticmethod
-    def get(username):
-        user = db.session.query(UserModel).filter_by(username=username).first_or_404()
+    @role_required(roles=["standard", "admin"])
+    def get(id):
+        user = db.session.query(UserModel).get_or_404(id)
         return user.to_json()
 
     @staticmethod
-    def delete(username):
-        user = db.session.query(UserModel).filter_by(username=username).first_or_404()
+    @role_required(roles=["standard", "admin"])
+    def delete(id):
+        user = db.session.query(UserModel).get_or_404(id)
         db.session.delete(user)
         db.session.commit()
         return '', 204
 
     @staticmethod
-    def put(username):
-        user = db.session.query(UserModel).filter_by(username=username).first_or_404()
+    @role_required(roles=["standard", "admin"])
+    def put(id):
+        user = db.session.query(UserModel).get_or_404(id)
         data = request.get_json().items()
         for key, value in data:
             setattr(user, key, value)
