@@ -41,9 +41,9 @@ class User(db.Model):
     @staticmethod
     def from_json(user_json):
         return User(
-            username=user_json.get('username'),
-            plain_password=user_json.get('password'),
-            email=user_json.get('email'),
-            firstname=user_json.get('firstname'),
-            lastname=user_json.get('lastname'),
+            username=get('username'),
+            plain_password=get('password'),
+            email=get('email'),
+            firstname=get('firstname'),
+            lastname=get('lastname'),
         )

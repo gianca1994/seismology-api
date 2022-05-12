@@ -16,7 +16,7 @@ class Sensor(db.Model):
         return '<Sensor: %r %r %r >' % (self.name, self.ip, self.port)
 
     def to_json(self):
-        self.user = db.session.query(UserModel).get(self.userId)
+        self.user = db.session.get(self.userId)
 
         sensor_json = {
             'id': self.id,
@@ -36,12 +36,12 @@ class Sensor(db.Model):
     @staticmethod
     def from_json(sensor_json):
         return Sensor(
-            name=str(sensor_json.get('name')),
-            ip=str(sensor_json.get('ip')),
-            port=int(sensor_json.get('port')),
-            status=bool(sensor_json.get('status')),
-            active=bool(sensor_json.get('active')),
-            userId=int(sensor_json.get('userId'))
+            name=str(get('name')),
+            ip=str(get('ip')),
+            port=int(get('port')),
+            status=bool(get('status')),
+            active=bool(get('active')),
+            userId=int(get('userId'))
         )
 
     def to_json_public(self):
