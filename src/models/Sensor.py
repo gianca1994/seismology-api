@@ -3,7 +3,7 @@ from .. import db
 
 class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(99), nullable=False)
+    name = db.Column(db.String(99), nullable=False, unique=True)
     ip = db.Column(db.String(99), nullable=False)
     port = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Boolean, nullable=False)
@@ -36,12 +36,12 @@ class Sensor(db.Model):
     @staticmethod
     def from_json(sensor_json):
         return Sensor(
-            name=str(get('name')),
-            ip=str(get('ip')),
-            port=int(get('port')),
-            status=bool(get('status')),
-            active=bool(get('active')),
-            userId=int(get('userId'))
+            name=sensor_json.get('name'),
+            ip=sensor_json.get('ip'),
+            port=sensor_json.get('port'),
+            status=sensor_json.get('status'),
+            active=sensor_json.get('active'),
+            userId=sensor_json.get('userId')
         )
 
     def to_json_public(self):

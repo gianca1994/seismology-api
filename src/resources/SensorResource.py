@@ -18,8 +18,7 @@ class SensorsResource(Resource):
             filters = request.get_json().items()
             for k, v in filters:
                 if k == "name":
-                    sensors = sensors.filter(
-                        SensorModel.name.like("%" + v + "%"))
+                    sensors = sensors.filter(SensorModel.name.like("%" + v + "%"))
                 if k == "userId[lte]":
                     sensors = sensors.filter(SensorModel.userId <= v)
                 if k == "userId[gte]":
@@ -46,7 +45,7 @@ class SensorsResource(Resource):
                 if k == "perpage":
                     per_page = int(v)
 
-        sensors = sensors.paginate(page, per_page, True, 500)
+        sensors = sensors.paginate(page, per_page, True, 100)
         return jsonify({
             "Sensors": [sensor.to_json() for sensor in sensors.items],
             "total": sensors.total,

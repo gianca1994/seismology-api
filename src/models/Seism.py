@@ -35,13 +35,11 @@ class Seism(db.Model):
     @staticmethod
     def from_json(seism_json):
         return Seism(
-            id=get('id'),
-            datetime=dt.strptime(get(
-                'datetime'), "%Y-%m-%d %H:%M:%S"),
-            magnitude=get('magnitude'),
-            latitude=get('latitude'),
-            longitude=get('longitude'),
-            depth=get('depth'),
-            verified=get('verified'),
-            sensorId=get('sensorId')
+            datetime=dt.strptime(seism_json.get('datetime'), "%Y-%m-%d %H:%M:%S"),
+            magnitude=seism_json.get('magnitude'),
+            latitude=seism_json.get('latitude'),
+            longitude=seism_json.get('longitude'),
+            depth=seism_json.get('depth'),
+            verified=seism_json.get('verified'),
+            sensorId=seism_json.get('sensorId')
         )
