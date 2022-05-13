@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import create_access_token
 from ..models import UserModel
 from .. import db
+from ..mail import sender_mail
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -27,6 +28,7 @@ def register():
         return 'Duplicated mail', 409
 
     try:
+        # sender_mail.send_email("Seismology Register", user.email, "Welcome to Seismology's website!")
         db.session.add(user)
         db.session.commit()
     except Exception as error:
