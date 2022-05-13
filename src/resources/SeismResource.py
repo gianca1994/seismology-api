@@ -15,7 +15,7 @@ class VerifiedSeisms(Resource):
     @role_required(roles=["standard", "admin"])
     def get():
         page, per_page = 1, 5
-        seisms = db.session.query(SeismModel).filter(SeismModel.verified is True)
+        seisms = db.session.query(SeismModel).filter(SeismModel.verified == True)
 
         if request.get_json():
             filter = request.get_json().items()
@@ -67,7 +67,7 @@ class UnverifiedSeisms(Resource):
     @role_required(roles=["standard", "admin"])
     def get():
         page, per_page = 1, 5
-        seisms = db.session.query(SeismModel).filter(SeismModel.verified is False)
+        seisms = db.session.query(SeismModel).filter(SeismModel.verified == False)
 
         if request.get_json():
             filters = request.get_json().items()

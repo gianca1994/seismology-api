@@ -57,14 +57,12 @@ class SensorsResource(Resource):
     @role_required(roles=["standard", "admin"])
     def post():
         sensor = SensorModel.from_json(request.get_json())
-
         try:
             db.session.add(sensor)
             db.session.commit()
-            return sensor.to_json(), 201
-
         except Exception as error:
             return str(error), 400
+        return sensor.to_json(), 201
 
 
 class SensorResource(Resource):

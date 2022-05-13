@@ -1,4 +1,5 @@
 from .. import db
+from .User import User as UserModel
 
 
 class Sensor(db.Model):
@@ -16,7 +17,7 @@ class Sensor(db.Model):
         return '<Sensor: %r %r %r >' % (self.name, self.ip, self.port)
 
     def to_json(self):
-        self.user = db.session.get(self.userId)
+        self.user = db.session.query(UserModel).get(self.userId)
 
         sensor_json = {
             'id': self.id,

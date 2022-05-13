@@ -22,13 +22,14 @@ def login():
 def register():
     user = UserModel.from_json(request.get_json())
     exists = db.session.query(UserModel).filter(UserModel.email == user.email).scalar() is not None
+
     if exists:
         return 'Duplicated mail', 409
-    else:
-        try:
-            db.session.add(user)
-            db.session.commit()
-        except Exception as error:
-            db.session.rollback()
-            return str(error), 409
-        return user.to_json(), 201
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception as error:
+        db.session.rollback()
+        return str(error), 409
+    return user.to_json_short(), 201

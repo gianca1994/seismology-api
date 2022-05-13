@@ -28,9 +28,11 @@ class User(db.Model):
 
     def to_json(self):
         return {
+            'id': str(self.id),
             'email': str(self.email),
             'firstname': str(self.firstname),
-            'lastname': str(self.lastname)
+            'lastname': str(self.lastname),
+            'role': str(self.role)
         }
 
     def to_json_short(self):

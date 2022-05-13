@@ -24,7 +24,7 @@ def create_app():
     import src.resources as resources
 
     api.add_resource(resources.UsersRsc, '/users')
-    api.add_resource(resources.UserRsc, '/users/<username>')
+    api.add_resource(resources.UserRsc, '/users/<id>')
 
     api.add_resource(resources.SensorsRsc, '/sensors')
     api.add_resource(resources.SensorRsc, '/sensors/<id>')

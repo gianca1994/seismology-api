@@ -11,7 +11,7 @@ class UsersResource(Resource):
     @role_required(roles=["standard", "admin"])
     def get():
         users = db.session.query(UserModel).all()
-        return jsonify([user.to_json_short() for user in users])
+        return jsonify([user.to_json() for user in users])
 
 
 class UserResource(Resource):
