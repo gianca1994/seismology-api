@@ -12,10 +12,10 @@ from flask import request, jsonify
 class VerifiedSeisms(Resource):
 
     @staticmethod
-    @role_required(roles=["standard", "admin"])
     def get():
+
         page, per_page = 1, 5
-        seisms = db.session.query(SeismModel).filter(SeismModel.verified == True)
+        seisms = db.session.query(SeismModel).filter(SeismModel.verified==True)
 
         if request.get_json():
             filter = request.get_json().items()
@@ -112,6 +112,13 @@ class UnverifiedSeisms(Resource):
 
         seisms = seisms.paginate(page, per_page, True, 100)
 
+        print(jsonify({
+            'Unverif-seisms': [seism.to_json() for seism in seisms.items],
+            'total': seisms.total,
+            'pages': seisms.pages,
+            'page': page
+        }))
+        
         return jsonify({
             'Unverif-seisms': [seism.to_json() for seism in seisms.items],
             'total': seisms.total,

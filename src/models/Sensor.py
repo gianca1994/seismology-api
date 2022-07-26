@@ -9,7 +9,7 @@ class Sensor(db.Model):
     port = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Boolean, nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    userId = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     user = db.relationship('User', back_populates='sensors', uselist=False, single_parent=True)
     seisms = db.relationship('Seism', back_populates='sensor', passive_deletes='all')
 
@@ -29,7 +29,7 @@ class Sensor(db.Model):
         }
 
         try:
-            sensor_json['user'] = self.user.to_json()
+           sensor_json['user'] = self.user.to_json()
         except:
             sensor_json['userId'] = self.userId
         return sensor_json

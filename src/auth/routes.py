@@ -9,12 +9,17 @@ auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth.route('/login', methods=['POST'])
 def login():
-    user = db.session.query(UserModel).filter(UserModel.email == request.get_json().get('email')).first_or_404()
+
+    user = (
+        db.session.query(UserModel)
+            .filter(UserModel.email == request.get_json().get("email"))
+            .first_or_404()
+    )
 
     if user.validate_pass(request.get_json().get('password')):
         access_token = create_access_token(identity=user)
-
-        return {'id': str(user.id), 'email': user.email, 'access_token': access_token}, 200
+        print(access_token)
+        return {'id': str(user.id), 'email': user.email, 'role': user.role, 'access_token': access_token}, 200
     else:
         return 'Incorrect password', 401
 

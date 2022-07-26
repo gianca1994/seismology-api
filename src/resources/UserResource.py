@@ -39,3 +39,9 @@ class UserResource(Resource):
         db.session.add(user)
         db.session.commit()
         return user.to_json(), 201
+
+
+class UsersInfo(Resource):
+    def get(self):
+        users = db.session.query(UserModel)
+        return jsonify({"Users": [user.to_json_short() for user in users]})

@@ -27,9 +27,11 @@ def create_app():
 
     import src.resources as resources
 
+    api.add_resource(resources.UserInforRsc, "/users-info")
     api.add_resource(resources.UsersRsc, '/users')
     api.add_resource(resources.UserRsc, '/users/<id>')
 
+    api.add_resource(resources.SensorInfoRsc, "/sensors-info")
     api.add_resource(resources.SensorsRsc, '/sensors')
     api.add_resource(resources.SensorRsc, '/sensors/<id>')
 
@@ -40,7 +42,7 @@ def create_app():
     api.add_resource(resources.UnverifiedSeismRsc, '/unverified-seisms/<id>')
 
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
+    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
     jwt.init_app(app)
 
     app.config["MAIL_HOSTNAME"] = os.getenv("MAIL_HOSTNAME")

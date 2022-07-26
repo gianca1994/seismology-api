@@ -101,3 +101,9 @@ class SensorResource(Resource):
         except Exception as error:
             db.session.rollback()
             return str(error), 400
+
+
+class SensorsInfo(Resource):
+    def get(self):
+        sensors = db.session.query(SensorModel)
+        return jsonify({"sensors": [sensor.to_json_public() for sensor in sensors]})
