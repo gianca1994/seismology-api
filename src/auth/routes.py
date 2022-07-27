@@ -18,7 +18,6 @@ def login():
 
     if user.validate_pass(request.get_json().get('password')):
         access_token = create_access_token(identity=user)
-        print(access_token)
         return {'id': str(user.id), 'email': user.email, 'role': user.role, 'access_token': access_token}, 200
     else:
         return 'Incorrect password', 401

@@ -111,13 +111,6 @@ class UnverifiedSeisms(Resource):
                         per_page = int(v)
 
         seisms = seisms.paginate(page, per_page, True, 100)
-
-        print(jsonify({
-            'Unverif-seisms': [seism.to_json() for seism in seisms.items],
-            'total': seisms.total,
-            'pages': seisms.pages,
-            'page': page
-        }))
         
         return jsonify({
             'Unverif-seisms': [seism.to_json() for seism in seisms.items],
@@ -140,7 +133,7 @@ class UnverifiedSeisms(Resource):
                 'latitude': uniform(-180, 180),
                 'longitude': uniform(-90, 90),
                 'verified': False,
-                'sensorId': sensor_list[randint(0, len(sensor_list) - 1)]
+                'sensorId': sensor_list[randint(0, len(sensor_list))]
             }
 
             seism = SeismModel.from_json(value_sensor)

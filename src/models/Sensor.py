@@ -37,6 +37,7 @@ class Sensor(db.Model):
     @staticmethod
     def from_json(sensor_json):
         return Sensor(
+            id=sensor_json.get("id"),
             name=sensor_json.get('name'),
             ip=sensor_json.get('ip'),
             port=sensor_json.get('port'),

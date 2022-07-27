@@ -49,5 +49,6 @@ class User(db.Model):
             email=user_json.get('email'),
             plain_password=user_json.get('password'),
             firstname=user_json.get('firstname'),
-            lastname=user_json.get('lastname')
+            lastname=user_json.get('lastname'),
+            role=user_json.get('role')
         )
