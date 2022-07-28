@@ -13,26 +13,28 @@ class VerifiedSeisms(Resource):
 
     @staticmethod
     def get():
-
-        page, per_page = 1, 5
+        page, per_page = 1, 7
         seisms = db.session.query(SeismModel).filter(SeismModel.verified==True)
 
         if request.get_json():
             filter = request.get_json().items()
-
             for k, v in filter:
                 if k == 'datetime':
                     seisms = seisms.filter(SeismModel.datetime == v)
-                if k == 'datetimeFrom':
+                if k == 'from_datetime':
                     seisms = seisms.filter(SeismModel.datetime >= v)
-                if k == 'datetimeTo':
+                if k == 'to_datetime':
                     seisms = seisms.filter(SeismModel.datetime <= v)
                 if k == 'sensorId':
                     seisms = seisms.filter(SeismModel.sensorId == v)
-                if k == 'magnitudeMax':
+                if k == "depth_max":
+                    seisms = seisms.filter(SeismModel.depth <= v)
+                if k == "depth_min":
+                    seisms = seisms.filter(SeismModel.depth >= v)
+                if k == 'magnitude_max':
                     seisms = seisms.filter(SeismModel.magnitude <= v)
-                if k == 'magnitudeMin':
-                    seisms = seisms.filter(SeismModel.magnitude == v)
+                if k == 'magnitude_min':
+                    seisms = seisms.filter(SeismModel.magnitude >= v)
                 if k == 'sensor.name':
                     seisms = seisms.join(SeismModel.sensor).filter(SensorModel.name.like('%' + v + '%'))
 
@@ -62,29 +64,31 @@ class VerifiedSeisms(Resource):
 
 
 class UnverifiedSeisms(Resource):
-
     @staticmethod
     @role_required(roles=["standard", "admin"])
     def get():
-        page, per_page = 1, 5
+        page, per_page = 1, 7
         seisms = db.session.query(SeismModel).filter(SeismModel.verified == False)
 
         if request.get_json():
             filters = request.get_json().items()
-
             for k, v in filters:
                 if 'datetime' in filters:
                     seisms = seisms.filter(SeismModel.datetime == v)
-                if k == 'datetimeFrom':
+                if k == 'from_datetime':
                     seisms = seisms.filter(SeismModel.datetime >= v)
-                if k == 'datetimeTo':
+                if k == 'to_datetime':
                     seisms = seisms.filter(SeismModel.datetime <= v)
                 if k == 'sensorId':
                     seisms = seisms.filter(SeismModel.sensorId == v)
-                if k == 'magnitude':
-                    seisms = seisms.filter(SeismModel.magnitude == v)
-                if k == 'depth':
-                    seisms = seisms.filter(SeismModel.depth == v)
+                if k == "depth_max":
+                    seisms = seisms.filter(SeismModel.depth <= v)
+                if k == "depth_min":
+                    seisms = seisms.filter(SeismModel.depth >= v)
+                if k == 'magnitude_max':
+                    seisms = seisms.filter(SeismModel.magnitude <= v)
+                if k == 'magnitude_min':
+                    seisms = seisms.filter(SeismModel.magnitude >= v)
 
                 if k == 'sort_by':
                     if v == 'datetime':
@@ -147,7 +151,7 @@ class UnverifiedSeisms(Resource):
 
 class VerifiedSeism(Resource):
     @staticmethod
-    @role_required(roles=["standard", "admin"])
+    # @role_required(roles=["standard", "admin"])
     def get(id):
         seism = db.session.query(SeismModel).get_or_404(id)
         return seism.to_json() if seism.verified else 'Access denied', 403

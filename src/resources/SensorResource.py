@@ -16,6 +16,7 @@ class SensorsResource(Resource):
 
         if request.get_json():
             filters = request.get_json().items()
+            print(filters)
             for k, v in filters:
                 if k == "name":
                     sensors = sensors.filter(SensorModel.name.like("%" + v + "%"))
@@ -25,6 +26,10 @@ class SensorsResource(Resource):
                     sensors = sensors.filter(SensorModel.userId >= v)
                 if k == "userId":
                     sensors = sensors.filter(SensorModel.userId == v)
+                if k == "status":
+                    sensors = sensors.filter(SensorModel.status)
+                if k == "active":
+                    sensors = sensors.filter(SensorModel.active)
 
                 if k == "sort_by":
                     if k == "name":
