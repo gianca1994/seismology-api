@@ -11,7 +11,7 @@ class SensorsResource(Resource):
     @staticmethod
     @role_required(roles=["standard", "admin"])
     def get():
-        page, per_page = 1, 10
+        page, per_page = 1, 5
         sensors = db.session.query(SensorModel)
 
         if request.get_json():

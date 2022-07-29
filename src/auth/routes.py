@@ -1,8 +1,9 @@
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token
 from ..models import UserModel
+from .decorators import role_required
 from .. import db
-from ..mail import sender_mail
+from ..mail.sender_mail import send_mail
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -24,6 +25,7 @@ def login():
 
 
 @auth.route('/register', methods=['POST'])
+@role_required(roles=["admin"])
 def register():
     user = UserModel.from_json(request.get_json())
     exists = db.session.query(UserModel).filter(UserModel.email == user.email).scalar() is not None
@@ -32,7 +34,8 @@ def register():
         return 'Duplicated mail', 409
 
     try:
-        # sender_mail.send_email("Seismology Register", user.email, "Welcome to Seismology's website!")
+
+        send_mail(user.email, "Welcome seismology!", 'register', user=user)
         db.session.add(user)
         db.session.commit()
     except Exception as error:

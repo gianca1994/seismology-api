@@ -13,6 +13,7 @@ class VerifiedSeisms(Resource):
 
     @staticmethod
     def get():
+        
         page, per_page = 1, 7
         seisms = db.session.query(SeismModel).filter(SeismModel.verified==True)
 
@@ -38,15 +39,24 @@ class VerifiedSeisms(Resource):
                 if k == 'sensor.name':
                     seisms = seisms.join(SeismModel.sensor).filter(SensorModel.name.like('%' + v + '%'))
 
-                if k == 'shortby':
+                if k == 'sort_by':
                     if v == 'datetime':
-                        seisms = seisms.order_by(SeismModel.dt)
-                    if v == 'datime.desc':
-                        seisms = seisms.order_by(SeismModel.dt.desc())
-                    if v == 'sensor.name':
-                        seisms = seisms.join(SeismModel.sensor).orderby(SensorModel.name)
-                    if v == 'sensor.namedesc':
-                        seisms = seisms.join(SeismModel.sensor).orderby(SensorModel.name.desc())
+                        seisms = seisms.order_by(SeismModel.datetime)
+                    if v == 'datetime.desc':
+                        seisms = seisms.order_by(SeismModel.datetime.desc())
+                    if v == 'sensorname':
+                        seisms = seisms.join(SeismModel.sensor).order_by(SensorModel.name.asc())
+                    if v == 'sensorname.desc':
+                        seisms = seisms.join(SeismModel.sensor).order_by(SensorModel.name.desc())
+
+                    if v == 'magnitude':
+                        seisms = seisms.order_by(SeismModel.magnitude.asc())
+                    if v == 'magnitude.desc':
+                        seisms = seisms.order_by(SeismModel.magnitude.desc())
+                    if v == 'depth':
+                        seisms = seisms.order_by(SeismModel.depth.asc())
+                    if v == 'depth.desc':
+                        seisms = seisms.order_by(SeismModel.depth.desc())
 
                 if k == 'page':
                     page = int(v)
@@ -109,13 +119,13 @@ class UnverifiedSeisms(Resource):
                     if v == 'depth.desc':
                         seisms = seisms.order_by(SeismModel.depth.desc())
 
-                    if k == 'page':
-                        page = int(v)
-                    if k == 'per_page':
-                        per_page = int(v)
+                if k == 'page':
+                    page = int(v)
+                if k == 'per_page':
+                    per_page = int(v)
 
         seisms = seisms.paginate(page, per_page, True, 100)
-        
+
         return jsonify({
             'Unverif-seisms': [seism.to_json() for seism in seisms.items],
             'total': seisms.total,
@@ -137,7 +147,7 @@ class UnverifiedSeisms(Resource):
                 'latitude': uniform(-180, 180),
                 'longitude': uniform(-90, 90),
                 'verified': False,
-                'sensorId': sensor_list[randint(0, len(sensor_list))]
+                'sensorId': sensor_list[randint(0, len(sensor_list) - 1)]
             }
 
             seism = SeismModel.from_json(value_sensor)
