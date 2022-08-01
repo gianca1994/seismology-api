@@ -34,8 +34,8 @@ def register():
         return 'Duplicated mail', 409
 
     try:
+        send_mail(user.email, "Welcome seismology!", 'register', user=user, password=request.get_json().get('password'))
 
-        send_mail(user.email, "Welcome seismology!", 'register', user=user)
         db.session.add(user)
         db.session.commit()
     except Exception as error:
