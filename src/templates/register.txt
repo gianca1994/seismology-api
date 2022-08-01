@@ -1,0 +1,11 @@
+Bienvenido {{user.firstname}} {{user.lastname}}!
+
+Gracias por registrarte en nuestro sistema.
+Datos para iniciar sesión:
+Usuario: {{user.email}}
+Contraseña: {{password}}
+
+Con nuestro servicio podras:
+Ver los sismos que esten verificados
+Ver, agregar, editar y borrar sismos no verificados
+Ver, agregar, editar, borrar y asignar sensores

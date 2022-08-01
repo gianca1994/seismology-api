@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+Pipfile.lock
+.idea
 # C extensions
 *.so
 
